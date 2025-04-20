@@ -1,5 +1,5 @@
 name: Double Take (Release Candidate)
-version: 1.13.11.9rc2
+version: 1.13.12.0rc3
 image: "ghcr.io/stevusprimus/hassio-addon-double-take-beta-{arch}"
 url: https://double-take.site/redirect.php?location=github
 panel_icon: mdi:face-recognition
