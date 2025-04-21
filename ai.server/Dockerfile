@@ -24,9 +24,10 @@ FROM ${BUILD_FROM} AS base
 
 RUN     if [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export INSTALLER_URL="${CPAI_INSTALLER_URL_AARCH64}"; \
-        else [ "${BUILD_ARCH}" = "amd64" ]; then \
+        elif [ "${BUILD_ARCH}" = "amd64" ]; then \
                 export INSTALLER_URL="${CPAI_INSTALLER_URL_AMD64}"; \
-        fi 
+        fi \
+        && echo "Installer URL: ${INSTALLER_URL}"
 
 # Environment vars ------------------------------------------------------------
 
@@ -163,7 +164,7 @@ RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
                         export INSTALLER_URL=${CPAI_INSTALLER_URL_AARCH64}; \
-                else [ "${BUILD_ARCH}" = "amd64" ]; then \
+                elif [ "${BUILD_ARCH}" = "amd64" ]; then \
                         export INSTALLER_URL=${CPAI_INSTALLER_URL_AMD64}; \
                 fi \
         \
@@ -172,7 +173,7 @@ RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export FILE_NAME=${CPAI_FILE_NAME_AARCH64}; \
-        else [ "${BUILD_ARCH}" = "amd64" ]; then \
+        elif [ "${BUILD_ARCH}" = "amd64" ]; then \
                 export FILE_NAME=${CPAI_FILE_NAME_AMD64}; \
         fi \
         \ 
@@ -181,7 +182,7 @@ RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export FILE_NAME=${CPAI_FILE_NAME_AARCH64}; \
-        else [ "${BUILD_ARCH}" = "amd64" ]; then \
+        elif [ "${BUILD_ARCH}" = "amd64" ]; then \
                 export FILE_NAME=${CPAI_FILE_NAME_AMD64}; \
         fi \
         \ 
@@ -194,7 +195,7 @@ RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export CPAI_VERSION=${CPAI_VERSION_AARCH64}; \
-        else [ "${BUILD_ARCH}" = "amd64" ]; then \
+        elif [ "${BUILD_ARCH}" = "amd64" ]; then \
                 export CPAI_VERSION=${CPAI_VERSION_AMD64}; \
         fi \
         && \
