@@ -203,8 +203,6 @@ RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # CREATE THE FINAL IMAGE ======================================================
 
-ARG ARCH_PREFIX
-
 FROM codeproject/ai-server:${ARCH_PREFIX}2.9.7 AS build
 FROM base AS final
 
