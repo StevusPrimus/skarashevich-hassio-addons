@@ -1,8 +1,6 @@
 # syntax = docker/dockerfile:1.4
 ARG BUILD_FROM
 
-FROM ${BUILD_FROM}
-
 # CodeProject.AI Server 3.0+
 #
 # Docker file for x86_64 CPU enabled image
@@ -26,7 +24,7 @@ ARG CPAI_VERSION
 # It's important to pull the correct base for the target architecture, otherwise
 # building this image on, say, an Arm64 machine will result in the base image
 # being Arm64, not x86_64 as assumed.
-FROM amd64/ubuntu:$UBUNTU_VERSION AS base
+FROM ${BUILD_FROM} AS base
 
 WORKDIR /app
 
