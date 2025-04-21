@@ -201,10 +201,10 @@ RUN python3.11 -m pip install --upgrade pip
 RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # CREATE THE FINAL IMAGE ======================================================
-
+RUN echo Build arch = $BUILD_ARCH
 RUN \
         set -x \
-        echo ${BUILD_ARCH} \
+        echo $BUILD_ARCH \
         if  [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export ARCH_PREFIX="arm64-"; \
         else \
