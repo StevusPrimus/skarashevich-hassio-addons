@@ -1,3 +1,9 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start the example service
+# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# ==============================================================================
+
 #!/bin/bash
 CONFIG_PATH=/data/options.json
 export MODULES_PATH=$(jq --raw-output '.MODULES_PATH // empty' $CONFIG_PATH)
