@@ -68,14 +68,6 @@ EXPOSE 5000
 EXPOSE 32168/tcp
 EXPOSE 32168/udp
 
-# Add some labels to the container --------------------------------------------
-
-LABEL "Application"="CodeProject.AI Server"
-LABEL "Publisher"="CodeProject Solutions Inc"
-LABEL "Version"="$CPAI_VERSION"
-LABEL "Target"="x64 Ubuntu $UBUNTU_VERSION CPU"
-LABEL "Description"="CodeProject.AI Server with CPU-only processing."
-
 # Install required libraries --------------------------------------------------
 
 # *** TODO: *** all of this is in /app/server/install.sh. This script should be 
