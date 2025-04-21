@@ -1,6 +1,6 @@
 name: Double Take
 version: 1.13.11.8
-image: ghcr.io/skrashevich/hassio-addon-double-take-{arch}
+image: "ghcr.io/stevusprimus/hassio-addon-double-take-{arch}"
 url: https://double-take.site/redirect.php?location=github
 panel_icon: mdi:face-recognition
 slug: double-take
@@ -25,6 +25,7 @@ ports_description:
 map:
   - media:rw
   - config:rw
+  - share:rw
 environment:
   HA_ADDON: "true"
 options:

@@ -32,9 +32,6 @@ jobs:
         id: addons
         uses: home-assistant/actions/helpers/find-addons@master
 
-      - name: ls on the build directory
-        run: ls -lla
-
       # - name: Get changed add-ons
       #   id: changed_addons
       #   run: |
@@ -107,14 +104,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set Image selector
-        run: |
-          if [[ "${{ matrix.arch }}" == "aarch64" ]]; then
-            echo "ARCH_PREFIX=arm64-" >> $GITHUB_ENV;
-          else
-            echo "ARCH_PREFIX=" >> $GITHUB_ENV;
-          fi
 
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
