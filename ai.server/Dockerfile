@@ -363,7 +363,7 @@ FROM base AS final
 
 # Note: UBUNTU_VERSION, DOTNET_VERSION and all ENV declared in 'base' are still here.
 
-ARG REPO_NAME
+ARG REPO_NAME=CodeProject.AI-Server
 ENV REPO_NAME=$REPO_NAME
 
 # Move published server and modules into place --------------------------------
