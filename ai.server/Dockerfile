@@ -203,8 +203,10 @@ RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 ARG BUILD_ARCH
 
-RUN set -x && \
-        if [ "${BUILD_ARCH}" = "aarch64" ]; then \
+RUN \
+        set -x \
+        echo ${BUILD_ARCH} \
+        if  [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export ARCH_PREFIX="arm64-"; \
         else \
                 export ARCH_PREFIX=""; \
