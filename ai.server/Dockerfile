@@ -253,10 +253,10 @@ ENV MODULES_REPO_NAME=$MODULES_REPO_NAME
 WORKDIR /src
 
 # Copy only the bits we need to for the .NET compilation steps
-COPY /${REPO_NAME}/src/server/                        src/server/
-COPY /${REPO_NAME}/src/SDK/                           src/SDK/
-COPY /${REPO_NAME}/src/scripts/                       src/scripts/
-COPY /${REPO_NAME}/modules/ObjectDetectionYOLOv5Net/  modules/ObjectDetectionYOLOv5Net/
+COPY ${REPO_NAME}/src/server/                        src/server/
+COPY ${REPO_NAME}/src/SDK/                           src/SDK/
+COPY ${REPO_NAME}/src/scripts/                       src/scripts/
+COPY ${REPO_NAME}/modules/ObjectDetectionYOLOv5Net/  modules/ObjectDetectionYOLOv5Net/
 
 # Build and publish Server
 WORKDIR "/src/src/server"
