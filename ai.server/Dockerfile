@@ -211,7 +211,7 @@ RUN \
         if  [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export ARCH_PREFIX="arm64-"; \
         else \
-                export ARCH_PREFIX=""; \
+                export ARCH_PREFIX=${BUILD_ARCH}; \
         fi
 
 FROM codeproject/ai-server:${ARCH_PREFIX}2.9.7 AS build
