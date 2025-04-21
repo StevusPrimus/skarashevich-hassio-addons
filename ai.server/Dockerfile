@@ -200,8 +200,11 @@ RUN python3.11 -m pip install --upgrade setuptools
 RUN python3.11 -m pip install --upgrade pip
 RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
+
+ENV BUILD_ARCH = $BUILD_ARCH
 # CREATE THE FINAL IMAGE ======================================================
 RUN echo Build arch = $BUILD_ARCH
+
 RUN \
         set -x \
         echo $BUILD_ARCH \
