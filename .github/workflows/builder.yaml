@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4.2.2
         with:
           repository: codeproject/CodeProject.AI-Server
-        path: CodeProject.AI-Server
+          path: CodeProject.AI-Server
       - name: Check out the repository
         uses: actions/checkout@v4.2.2
 
