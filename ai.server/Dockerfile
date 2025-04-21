@@ -17,7 +17,7 @@ ARG BUILD_FROM
 # Note: we're before the first 'FROM' statement so these values are not available
 # inside the build stages. If you wish to use these inside a stage, re-grab them 
 # inside that stage
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=20.04
 ARG DOTNET_VERSION=9.0
 ARG CPAI_VERSION
 
@@ -48,7 +48,7 @@ ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Grab the values passed in via command line here so we can use inside this stage
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=20.04
 ARG DOTNET_VERSION=9.0
 ARG CPAI_VERSION
 
