@@ -202,8 +202,8 @@ RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 
 # CREATE THE FINAL IMAGE ======================================================
-
-FROM codeproject/ai-server:${ARCH_PREFIX}2.9.7 AS build
+ARG ARCH_PREFIX_TAG
+FROM codeproject/ai-server:${ARCH_PREFIX_TAG}2.9.7 AS build
 FROM base AS final
 
 # Note: UBUNTU_VERSION, DOTNET_VERSION and all ENV declared in 'base' are still here.
