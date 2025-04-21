@@ -5,10 +5,10 @@ env:
   MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs"
 
 on:
-  #push:
-  #  branches:
-  #    - main
-  #pull_request:
+  push:
+    branches:
+      - feature/migrate-ha-addon-architecture
+        #pull_request:
   #  branches:
   #    - main
   workflow_dispatch:
