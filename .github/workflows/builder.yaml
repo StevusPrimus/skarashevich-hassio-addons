@@ -37,6 +37,9 @@ jobs:
         id: addons
         uses: home-assistant/actions/helpers/find-addons@master
 
+      - name: ls on the build directory
+        run: ls -lla
+
      # - name: Get changed add-ons
      #   id: changed_addons
      #   run: |
