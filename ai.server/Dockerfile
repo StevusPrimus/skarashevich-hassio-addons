@@ -25,7 +25,8 @@ ARG CPAI_VERSION=2.9.7
 # It's important to pull the correct base for the target architecture, otherwise
 # building this image on, say, an Arm64 machine will result in the base image
 # being Arm64, not x86_64 as assumed.
-FROM ${BUILD_FROM} AS base
+ARG HA_DOCKER_BASE_IMAGE
+FROM ${HA_DOCKER_BASE_IMAGE} AS base
 
 WORKDIR /app
 
@@ -202,8 +203,7 @@ RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 
 # CREATE THE FINAL IMAGE ======================================================
-ARG ARCH_PREFIX_TAG
-FROM codeproject/ai-server:${ARCH_PREFIX_TAG}2.9.7 AS build
+FROM ${BUILD_FROM} AS build
 FROM base AS final
 
 # Note: UBUNTU_VERSION, DOTNET_VERSION and all ENV declared in 'base' are still here.
