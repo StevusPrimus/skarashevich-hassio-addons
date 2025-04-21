@@ -134,9 +134,9 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 # .NET -------------------------------------------------------------------------
 
 # Update packages and install .NET
-RUN apt install software-properties-common -y                               && \
-    add-apt-repository ppa:dotnet/backports -y                              && \
-    apt-get update && apt-get install aspnetcore-runtime-$DOTNET_VERSION -y > /dev/null
+RUN apt install software-properties-common -y
+RUN add-apt-repository ppa:dotnet/backports -y
+RUN apt-get update && apt-get install aspnetcore-runtime-$DOTNET_VERSION -y > /dev/null
 
 
 # Setup Python ----------------------------------------------------------------
@@ -267,7 +267,4 @@ LABEL \
   io.hass.type="addon" \
   io.hass.arch="aarch64|amd64"
 
-RUN chmod a+x /run.sh
 WORKDIR /app/server
-ENTRYPOINT []
-CMD [ "/run.sh" ]
