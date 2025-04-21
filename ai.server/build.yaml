@@ -9,4 +9,4 @@ labels:
   org.opencontainers.image.licenses: "Apache License 2.0"
 args:
   TEMPIO_VERSION: "2024.11.2"
-  ARCH_PREFIX_TAG: $ARCH_PREFIX
+  ARCH_PREFIX_TAG: "${ARCH_PREFIX}"
