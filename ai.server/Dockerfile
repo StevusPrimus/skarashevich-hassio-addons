@@ -25,19 +25,14 @@ ARG CPAI_VERSION_AARCH64 CPAI_VERSION_AMD64
 ARG CPAI_INSTALLER_URL_AARCH64 CPAI_INSTALLER_URL_AMD64
 ARG CPAI_FILE_NAME_AARCH64 CPAI_FILE_NAME_AMD64
 
-RUN     if [ "${BUILD_ARCH}" = "aarch64" ]; then \
-                export INSTALLER_URL="${CPAI_INSTALLER_URL_AARCH64}"; \
-        elif [ "${BUILD_ARCH}" = "amd64" ]; then \
-                export INSTALLER_URL="${CPAI_INSTALLER_URL_AMD64}"; \
-        fi \
-        && echo "Installer URL: ${INSTALLER_URL}" \
-        && echo "Installer URL: ${CPAI_INSTALLER_URL_AARCH64}" \
-        && echo "Installer URL: ${CPAI_INSTALLER_URL_AMD64}" \
-        && echo "Installer URL: ${BUILD_ARCH}" \
-        && echo "Installer URL: ${CPAI_VERSION_AARCH64}" \
-        && echo "Installer URL: ${CPAI_VERSION_AMD64}" \
-        && echo "Installer URL: ${CPAI_FILE_NAME_AARCH64}" \
-        && echo "Installer URL: ${CPAI_FILE_NAME_AMD64}" 
+RUN   \ 
+        echo "CPAI_INSTALLER_URL_AARCH64L: ${CPAI_INSTALLER_URL_AARCH64}" \
+        && echo "CPAI_INSTALLER_URL_AMD64: ${CPAI_INSTALLER_URL_AMD64}" \
+        && echo "BUILD_ARCH: ${BUILD_ARCH}" \
+        && echo "CPAI_VERSION_AARCH64: ${CPAI_VERSION_AARCH64}" \
+        && echo "CPAI_VERSION_AMD64: ${CPAI_VERSION_AMD64}" \
+        && echo "CPAI_FILE_NAME_AARCH64: ${CPAI_FILE_NAME_AARCH64}" \
+        && echo "CPAI_FILE_NAME_AMD64: ${CPAI_FILE_NAME_AMD64}" 
 
 # Environment vars ------------------------------------------------------------
 
@@ -215,9 +210,7 @@ RUN \
                 export CPAI_VERSION=${CPAI_VERSION_AMD64}; \
         fi \
         && \
-        mkdir -p /app \
-        && \
-        ln -s /usr/bin/codeproject.ai-server-${CPAI_VERSION} /app/server 
+        ln -s /usr/bin/codeproject.ai-server-${CPAI_VERSION} /app 
 
 RUN pushd "/app/server" && bash ../setup.sh && popd
 
