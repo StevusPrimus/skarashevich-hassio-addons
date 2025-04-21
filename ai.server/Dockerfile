@@ -203,18 +203,17 @@ RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 ENV BUILD_ARCH = $BUILD_ARCH
 # CREATE THE FINAL IMAGE ======================================================
-RUN echo Build arch = $BUILD_ARCH
 
 RUN \
-        set -x \
-        echo $BUILD_ARCH \
+        set -x  && \
+        echo $BUILD_ARCH && \
         if  [ "${BUILD_ARCH}" = "aarch64" ]; then \
                 export ARCH_PREFIX="arm64-"; \
         else \
                 export ARCH_PREFIX=${BUILD_ARCH}; \
         fi
 
-FROM codeproject/ai-server:${BUILD_ARCH}2.9.7 AS build
+FROM codeproject/ai-server:${ARCH_PREFIX}2.9.7 AS build
 FROM base AS final
 
 # Note: UBUNTU_VERSION, DOTNET_VERSION and all ENV declared in 'base' are still here.
