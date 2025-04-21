@@ -1,4 +1,11 @@
 ---
 build_from:
-  aarch64: codeproject/ai-server:arm64-2.5.1
-  amd64: codeproject/ai-server:cpu-2.5.1
+  aarch64: "ghcr.io/home-assistant/aarch64-base-ubuntu:20.04"
+  amd64: "ghcr.io/home-assistant/amd64-base-ubuntu:20.04"
+labels:
+  org.opencontainers.image.title: "Home Assistant Add-on: Codeproject.Ai"
+  #org.opencontainers.image.description: "Example add-on to use as a blueprint for new add-ons."
+  org.opencontainers.image.source: "https://github.com/StevusPrimus/skarashevich-hassio-addons"
+  org.opencontainers.image.licenses: "Apache License 2.0"
+args:
+  TEMPIO_VERSION: "2024.11.2"
