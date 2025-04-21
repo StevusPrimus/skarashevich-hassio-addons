@@ -2,6 +2,7 @@
 ARG BUILD_FROM BUILD_ARCH
 ARG CPAI_VERSION_AARCH64 CPAI_VERSION_AMD64
 ARG CPAI_INSTALLER_URL_AARCH64 CPAI_INSTALLER_URL_AMD64
+ARG CPAI_FILE_NAME_AARCH64 CPAI_FILE_NAME_AMD64
 
 
 # CodeProject.AI Server 3.0+
@@ -27,7 +28,14 @@ RUN     if [ "${BUILD_ARCH}" = "aarch64" ]; then \
         elif [ "${BUILD_ARCH}" = "amd64" ]; then \
                 export INSTALLER_URL="${CPAI_INSTALLER_URL_AMD64}"; \
         fi \
-        && echo "Installer URL: ${INSTALLER_URL}"
+        && echo "Installer URL: ${INSTALLER_URL}" \
+        && echo "Installer URL: ${CPAI_INSTALLER_URL_AARCH64}" \
+        && echo "Installer URL: ${CPAI_INSTALLER_URL_AMD64}" \
+        && echo "Installer URL: ${BUILD_ARCH}" \
+        && echo "Installer URL: ${CPAI_VERSION_AARCH64}" \
+        && echo "Installer URL: ${CPAI_VERSION_AMD64}" \
+        && echo "Installer URL: ${CPAI_FILE_NAME_AARCH64}" \
+        && echo "Installer URL: ${CPAI_FILE_NAME_AMD64}" 
 
 # Environment vars ------------------------------------------------------------
 
