@@ -214,10 +214,10 @@ FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_VERSION AS build
 
 # Grab the values passed in via command line here so we can use inside this stage
 # See https://docs.docker.com/engine/reference/builder/#scope
-ARG UBUNTU_VERSION=22.04
+ARG UBUNTU_VERSION=20.04
 ARG DOTNET_VERSION=9.0
 ARG CPAI_VERSION
-ARG REPO_NAME
+ARG REPO_NAME=CodeProject.AI-Server
 ARG MODULES_REPO_NAME=CodeProject.AI-Modules
 
 ENV CPAI_VERSION=$CPAI_VERSION
