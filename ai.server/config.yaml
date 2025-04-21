@@ -24,6 +24,8 @@ ports_description:
 webui: "[PROTO:http]://[HOST]:[PORT:5000]/"
 map:
   - config:rw
+  - share:rw
+  - media:rw
 environment:
   HA_ADDON: "true"
   DATA_DIR: "/config/ai-server/data"
