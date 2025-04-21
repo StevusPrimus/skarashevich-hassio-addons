@@ -28,6 +28,11 @@ jobs:
         with:
           repository: codeproject/CodeProject.AI-Server
           path: CodeProject.AI-Server
+      - name: Check out the root repository of Codeproject.AI-Modules
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: codeproject/CodeProject.AI-Modules
+          path: CodeProject.AI-Modules
 
       #- name: Get changed files
       #  id: changed_files
