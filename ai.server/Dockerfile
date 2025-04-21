@@ -15,7 +15,7 @@ ARG BUILD_FROM
 # INITIAL SETUP ===============================================================
 
 # Note: we're before the first 'FROM' statement so these values are not available
-# inside the build stages. If you wish to use these inside a stage, re-grab them 
+# inside the build stages. If you wish to use these inside a stage, re-grab them
 # inside that stage
 ARG UBUNTU_VERSION=22.04
 ARG DOTNET_VERSION=9.0
@@ -70,7 +70,7 @@ EXPOSE 32168/udp
 
 # Install required libraries --------------------------------------------------
 
-# *** TODO: *** all of this is in /app/server/install.sh. This script should be 
+# *** TODO: *** all of this is in /app/server/install.sh. This script should be
 # called rather than having the same commands copy and pasted here.
 
 # RUN apt-get update -y && apt-get upgrade -y --no-install-recommends apt-utils
@@ -133,10 +133,10 @@ RUN apt-get update && apt-get install aspnetcore-runtime-$DOTNET_VERSION -y > /d
 
 # Setup Python ----------------------------------------------------------------
 
-# *** TODO: *** all of this is in /app/SDK/Scripts/utils.sh under "setupPython". 
-# We should use that method rather than having the same commands copy and pasted 
+# *** TODO: *** all of this is in /app/SDK/Scripts/utils.sh under "setupPython".
+# We should use that method rather than having the same commands copy and pasted
 # here. BEWARE that the list of apt installed here differs a little from what is
-# installed via setupPython. installRequiredPythonPackages also installs some 
+# installed via setupPython. installRequiredPythonPackages also installs some
 # tools from the list below
 
 # Combining all these together into a single layer
@@ -158,10 +158,10 @@ RUN apt-get install -y --no-install-recommends            \
         python3-apt                                       \
         python3-setuptools
 RUN apt-get install -y --no-install-recommends            \
-        python3.8                                
+        python3.8
 RUN apt-get install -y --no-install-recommends            \
         python3.8-distutils                               \
-        python3.8-dev                                     \ 
+        python3.8-dev                                     \
         python3.8-venv
 RUN python3.8 -m pip install --upgrade setuptools
 RUN python3.8 -m pip install --upgrade pip
@@ -179,7 +179,7 @@ RUN apt-get install -y --no-install-recommends            \
         python3.9
 RUN apt-get install -y --no-install-recommends            \
         python3.9-distutils                               \
-        python3.9-dev                                     \ 
+        python3.9-dev                                     \
         python3.9-venv
 RUN python3.9 -m pip install --upgrade setuptools
 RUN python3.9 -m pip install --upgrade pip
@@ -193,7 +193,7 @@ RUN apt-get install -y --no-install-recommends             \
         python3.11
 RUN apt-get install -y --no-install-recommends             \
         python3.11-distutils                               \
-        python3.11-dev                                     \ 
+        python3.11-dev                                     \
         python3.11-venv
 RUN python3.11 -m pip install --upgrade setuptools
 RUN python3.11 -m pip install --upgrade pip
@@ -201,7 +201,16 @@ RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # CREATE THE FINAL IMAGE ======================================================
 
-FROM codeproject/ai-server:2.9.7 AS build
+ARG BUILD_ARCH
+
+RUN set -x && \
+        if [ "${BUILD_ARCH}" = "aarch64" ]; then \
+                export ARCH_PREFIX="arm64-"; \
+        else \
+                export ARCH_PREFIX=""; \
+        fi
+
+FROM codeproject/ai-server:${ARCH_PREFIX}2.9.7 AS build
 FROM base AS final
 
 # Note: UBUNTU_VERSION, DOTNET_VERSION and all ENV declared in 'base' are still here.
@@ -217,11 +226,11 @@ COPY --from=build /app .
 
 # Install required Python packages --------------------------------------------
 
-# *** TODO: *** all of this is in /app/SDK/Scripts/utils.sh under 
+# *** TODO: *** all of this is in /app/SDK/Scripts/utils.sh under
 # "installRequiredPythonPackages". We should use that method rather than having
 # the same commands copy and pasted here. NOTE that installRequiredPythonPackages
 # installs some packages that, combined with the packages installed by setupPython,
-# provide coverage for *almost* all the packages installed in this docker file. 
+# provide coverage for *almost* all the packages installed in this docker file.
 # When switching to using our scripts we need to ensure we cover all installs and
 # test.
 
@@ -242,10 +251,10 @@ RUN python3.8 -m pip --no-cache-dir install \
 
 RUN python3.9 -m pip --no-cache-dir install \
     -r /app/SDK/Python/requirements.txt
-    
+
 # Add folders for storing persisted user data and modules. This should be mapped
-# to a folder on the host. Typically C:\ProgramData\CodeProject\AI on Windows, 
-# /etc/codeproject/ai on Linux, and /Library/Application Support/CodeProject/AI 
+# to a folder on the host. Typically C:\ProgramData\CodeProject\AI on Windows,
+# /etc/codeproject/ai on Linux, and /Library/Application Support/CodeProject/AI
 # on macOS.
 # We also make a .vscode folder so we have some bits in place if we wish to run
 # VSCode inside the container
