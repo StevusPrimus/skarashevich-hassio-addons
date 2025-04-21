@@ -214,7 +214,7 @@ RUN \
                 export ARCH_PREFIX=${BUILD_ARCH}; \
         fi
 
-FROM codeproject/ai-server:${ARCH_PREFIX}2.9.7 AS build
+FROM codeproject/ai-server:${BUILD_ARCH}2.9.7 AS build
 FROM base AS final
 
 # Note: UBUNTU_VERSION, DOTNET_VERSION and all ENV declared in 'base' are still here.
