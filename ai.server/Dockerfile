@@ -1,5 +1,6 @@
 # syntax = docker/dockerfile:1.4
 ARG BUILD_FROM
+ARG BUILD_ARCH
 
 # CodeProject.AI Server 3.0+
 #
@@ -200,8 +201,6 @@ RUN python3.11 -m pip install --upgrade pip
 RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # CREATE THE FINAL IMAGE ======================================================
-
-ARG BUILD_ARCH
 
 RUN \
         set -x \
