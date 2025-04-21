@@ -209,6 +209,7 @@ RUN apt-get install -y --no-install-recommends             \
 
 # CREATE THE FINAL IMAGE ======================================================
 
+FROM codeproject/ai-server:2.9.7 AS build
 FROM base AS final
 
 # Note: UBUNTU_VERSION, DOTNET_VERSION and all ENV declared in 'base' are still here.
@@ -218,7 +219,6 @@ ENV REPO_NAME=$REPO_NAME
 
 # Move published server and modules into place --------------------------------
 
-FROM codeproject/ai-server:2.9.7 AS build
 
 WORKDIR /app
 COPY --from=build /app .
