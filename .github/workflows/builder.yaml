@@ -108,6 +108,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set Image selector
+       run: |
+          if [[ "${{ matrix.arch }}" == "aarch64" ]]; then
+            echo "ARCH_PREFIX=arm64-" >> $GITHUB_ENV;
+          else
+            echo "ARCH_PREFIX=" >> $GITHUB_ENV;
+          fi
+
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
         uses: home-assistant/builder@2025.03.0

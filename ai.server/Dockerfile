@@ -201,17 +201,9 @@ RUN python3.11 -m pip install --upgrade pip
 RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 
-ENV BUILD_ARCH = $BUILD_ARCH
 # CREATE THE FINAL IMAGE ======================================================
 
-RUN \
-        set -x  && \
-        echo $BUILD_ARCH && \
-        if  [ "${BUILD_ARCH}" = "aarch64" ]; then \
-                export ARCH_PREFIX="arm64-"; \
-        else \
-                export ARCH_PREFIX=${BUILD_ARCH}; \
-        fi
+ARG ARCH_PREFIX
 
 FROM codeproject/ai-server:${ARCH_PREFIX}2.9.7 AS build
 FROM base AS final
