@@ -19,7 +19,7 @@ ARG BUILD_FROM
 # inside that stage
 ARG UBUNTU_VERSION=20.04
 ARG DOTNET_VERSION=9.0
-ARG CPAI_VERSION
+ARG CPAI_VERSION=2.9.7
 
 # It's important to pull the correct base for the target architecture, otherwise
 # building this image on, say, an Arm64 machine will result in the base image
@@ -207,156 +207,6 @@ RUN apt-get install -y --no-install-recommends             \
     python3.11 -m pip install --upgrade pip        &&      \
     python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
-
-# Build the .NET source in a separate, discardable build container --------------
-
-FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_VERSION AS build
-
-# Grab the values passed in via command line here so we can use inside this stage
-# See https://docs.docker.com/engine/reference/builder/#scope
-ARG UBUNTU_VERSION=20.04
-ARG DOTNET_VERSION=9.0
-ARG CPAI_VERSION
-ARG REPO_NAME=CodeProject.AI-Server
-ARG MODULES_REPO_NAME=CodeProject.AI-Modules
-
-ENV CPAI_VERSION=$CPAI_VERSION
-ENV UBUNTU_VERSION=$UBUNTU_VERSION
-ENV DOTNET_VERSION=$DOTNET_VERSION
-ENV REPO_NAME=$REPO_NAME
-ENV MODULES_REPO_NAME=$MODULES_REPO_NAME
-
-# REVIEW: [Matthew] This seems way too messy.
-# 1. We should do a "cd / && mkdir CodeProject.AI" so we have a clean folder that's ours
-#    Instead of COPY src/server/ src/server/ it will be COPY src/server/ CodeProject.AI/server/
-#    WORKDIR /src would be WORKDIR /CodeProject.AI 
-#    WORKDIR /src/src/server would be /CodeProject.AI/src/server
-# 2. We don't need to copy any of the Python stuff to this .NET build server. We should
-#    only copy ObjectDetectionYOLOv5Net, not the other modules
-#    So, in the "FROM base AS final" stage we would do copy over the Python modules:
-#    COPY ["src/modules/FaceProcessing/", "/app/preinstalled-modules/FaceProcessing"]
-#    RUN mv  -f "/app/preinstalled-modules/FaceProcessing/modulesettings.docker.build.json" \
-#               "/app/preinstalled-modules/FaceProcessing/modulesettings.docker.json"    && \
-#        rm -rf /app/preinstalled-modules/FaceProcessing/intelligencelayer/__pycache__   && \
-#        rm -rf /app/preinstalled-modules/FaceProcessing/bin                             && \
-#        rm -f /app/preinstalled-modules/FaceProcessing/*.zip        \
-#              /app/preinstalled-modules/FaceProcessing/package.bat  \
-#              /app/preinstalled-modules/FaceProcessing/*.pyprog     > /dev/null
-# 3. Similarly, we shouldn't copy over the .NET assets. ie:
-#    Do not do in the build stage
-#      COPY [ "/src/modules/ObjectDetectionYOLOv5Net/assets", "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/assets" 
-#    Instead, in the last stage:
-#      COPY [ "/src/modules/ObjectDetectionYOLOv5Net/assets", "/app/preinstalled-modules/ObjectDetectionYOLOv5Net/assets" 
-
-
-# change directory to /src in the build image
-WORKDIR /src
-
-# Copy only the bits we need to for the .NET compilation steps
-COPY /${REPO_NAME}/src/server/                        src/server/
-COPY /${REPO_NAME}/src/SDK/                           src/SDK/
-COPY /${REPO_NAME}/src/scripts/                       src/scripts/
-COPY /${REPO_NAME}/modules/ObjectDetectionYOLOv5Net/  modules/ObjectDetectionYOLOv5Net/
-
-# Build and publish Server
-WORKDIR "/src/src/server"
-RUN dotnet publish "Server.csproj" -c Release --no-self-contained --force -o /app/publish/server
-
-# Build and publish .NET modules, copy over docker-specific modulesettings, and 
-# then copy over models
-
-# NOTE: For modules that we're installing directly into the Docker image, we will
-#       use the /preinstalled-modules folder, not the /modules folder. This is
-#       because we are asking users to mount a folder on their host machine mapped
-#       to the /modules folder in this docker image. When they do that, anything
-#       in the /modules folder in this image disappears and is replaced by the 
-#       contents of the folder they mounted.
-#
-#       Two solutions:
-#         1. We install pre-installed modules in a different folder (this is what
-#            we're doing). The modules can still be uninstalled, and if
-#            re-installed, they will be installed in the modules directory as 
-#            "not preinstalled".
-#         2. We work out how to mount a folder in a way that makes the stuff we've
-#            already installed still be visible, while also allowing us to add
-#            installed modules to the folder. This  probably involves volumes
-
-WORKDIR "/src/modules/ObjectDetectionYOLOv5Net"
-RUN dotnet publish ObjectDetectionYOLOv5Net.csproj -c Release --no-self-contained /p:DefineConstants=GPU_NONE \
-                   --force -o /app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/bin &&       \
-    mv -f /app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/bin/modulesettings.*             \
-          /app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/                        &&       \
-    mv -f /app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/modulesettings.docker.build.json \
-          /app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/modulesettings.docker.json > /dev/null
-
-# BEGIN REVIEW ================================================================
-
-# REVIEW: [Matthew] This section should go in the "FROM base AS final" part, not
-#                   here. We're copying the orig code to the build container and
-#                   then from build to final. Should just copy from code to final.
-
-# TODO: Grab these assets from our S3 bucket. Otherwise we have to ensure we've done a Dev setup on
-#       the local machine first, to ensure these files are present
-COPY [ "/${REPO_NAME}/modules/ObjectDetectionYOLOv5Net/assets",        "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/assets" ]
-COPY [ "/${REPO_NAME}/modules/ObjectDetectionYOLOv5Net/custom-models", "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net/custom-models" ]
-
-# And ensure required assets are copied over. 
-COPY [ "/${REPO_NAME}/modules/ObjectDetectionYOLOv5Net/explore.html", "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5Net" ]
-
-## Move non-compiled code (Python, script) into place --------------------------
-
-WORKDIR /src
-
-# We need some way to tell the server that for modules built into the Docker
-# image, the venv will be in one place, but for modules downloaded at runtime, 
-# the venv for the module will be in a different place.
-#
-# We do this by having a modulesettings.docker.build.json file that has the
-# settings for modules pre-installed into the image. this build.json file is 
-# copied into the image and renamed to just .docker.json at Docker build time,
-# and then when the module loads up, everything works.
-# 
-# If the module were downloaded and installed during runtime, then the usual 
-# modulesettings.linux.json would be used, and then modulesettings.docker.json
-# would then be loaded (if it existed). The modulesettings.docker.build.json 
-# file would be ignored.
-#
-# This enables us to have a modulesettings for inside a docker image, and module
-# settings for modules outside the docker image.
-
-COPY [ "/${MODULES_REPO_NAME}/CodeProject.AI-FaceProcessing/", "/app/publish/preinstalled-modules/FaceProcessing"]
-RUN mv  -f "/app/publish/preinstalled-modules/FaceProcessing/modulesettings.docker.build.json" \
-           "/app/publish/preinstalled-modules/FaceProcessing/modulesettings.docker.json"    && \
-    rm -rf "/app/publish/preinstalled-modules/FaceProcessing/intelligencelayer/__pycache__" && \
-    rm -rf "/app/publish/preinstalled-modules/FaceProcessing/bin"                           && \
-    rm -f "/app/publish/preinstalled-modules/FaceProcessing/*.zip"        \
-          "/app/publish/preinstalled-modules/FaceProcessing/package.bat"  \
-          "/app/publish/preinstalled-modules/FaceProcessing/*.pyprog"     > /dev/null
-
-COPY ["/${REPO_NAME}/modules/ObjectDetectionYOLOv5-6.2/", "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2"]
-RUN mv -f  "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2/modulesettings.docker.build.json" \
-           "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2/modulesettings.docker.json" &&    \
-    rm -rf "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2/__pycache__"                &&    \
-    rm -rf "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2/bin"                        &&    \
-    rm -f  "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2/*.zip"       \
-           "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2/package.bat" \
-           "/app/publish/preinstalled-modules/ObjectDetectionYOLOv5-6.2/*.pyprog"    > /dev/null
-
-# SDK and install scripts
-COPY ["/${REPO_NAME}/src/SDK/Python",        "/app/publish/SDK/Python"]
-COPY ["/${REPO_NAME}/src/SDK/install.sh",    "/app/publish/SDK/install.sh"]
-COPY ["/${REPO_NAME}/src/server/install.sh", "/app/publish/server/install.sh"]
-COPY ["/${REPO_NAME}/src/scripts",           "/app/publish/scripts"]
-COPY ["/${REPO_NAME}/src/setup.sh",          "/app/publish/setup.sh"]
-COPY ["/${REPO_NAME}/.env",                  "/app/publish/.env"]
-
-# Cleanup / setup
-RUN rm -rf /app/publish/SDK/Python/__pycache__ \
-    mkdir /app/publish/runtimes
-
-# END REVIEW ===================================================================
-
-
 # CREATE THE FINAL IMAGE ======================================================
 
 FROM base AS final
@@ -368,8 +218,10 @@ ENV REPO_NAME=$REPO_NAME
 
 # Move published server and modules into place --------------------------------
 
+FROM codeproject/ai-server:2.9.7 AS build
+
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /app .
 
 # Install required Python packages --------------------------------------------
 
@@ -405,17 +257,7 @@ RUN python3.9 -m pip --no-cache-dir install \
 # on macOS.
 # We also make a .vscode folder so we have some bits in place if we wish to run
 # VSCode inside the container
-RUN mkdir --parents /etc/codeproject/ai                 && \
-    mkdir --parents /app/downloads/modules /app/modules && \
-    mkdir /app/.vscode
-
-# For debugging the live container using VS Code
-COPY [ "/${REPO_NAME}/.vscode/launch.docker.json", "/app/.vscode/launch.json" ]
-COPY [ "/${REPO_NAME}/.vscode/tasks.docker.json",  "/app/.vscode/tasks.json" ]
-
-# Start the server
-#WORKDIR /app/server
-#ENTRYPOINT ["./CodeProject.AI.Server"]
+RUN mkdir --parents /etc/codeproject/ai
 
 # For debug
 # ENTRYPOINT ["tail", "-f", "/dev/null"]
