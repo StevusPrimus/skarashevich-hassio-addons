@@ -3,6 +3,7 @@ ARG BUILD_FROM BUILD_ARCH
 ARG CPAI_VERSION_AARCH64 CPAI_VERSION_AMD64
 ARG CPAI_INSTALLER_URL_AARCH64 CPAI_INSTALLER_URL_AMD64
 
+
 # CodeProject.AI Server 3.0+
 #
 # Docker file for x86_64 CPU enabled image
@@ -20,6 +21,14 @@ ARG CPAI_INSTALLER_URL_AARCH64 CPAI_INSTALLER_URL_AMD64
 # building this image on, say, an Arm64 machine will result in the base image
 # being Arm64, not x86_64 as assumed.
 FROM ${BUILD_FROM} AS base
+
+RUN \
+        set -x \
+        && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
+                        export INSTALLER_URL=${CPAI_INSTALLER_URL_AARCH64}; \
+                else [ "${BUILD_ARCH}" = "amd64" ]; then \
+                        export INSTALLER_URL=${CPAI_INSTALLER_URL_AMD64}; \
+                fi \
 
 # Environment vars ------------------------------------------------------------
 
