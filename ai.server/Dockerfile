@@ -23,9 +23,9 @@ ARG CPAI_INSTALLER_URL_AARCH64 CPAI_INSTALLER_URL_AMD64
 FROM ${BUILD_FROM} AS base
 
 RUN     if [ "${BUILD_ARCH}" = "aarch64" ]; then \
-                export INSTALLER_URL=${CPAI_INSTALLER_URL_AARCH64}; \
+                export INSTALLER_URL="${CPAI_INSTALLER_URL_AARCH64}"; \
         else [ "${BUILD_ARCH}" = "amd64" ]; then \
-                export INSTALLER_URL=${CPAI_INSTALLER_URL_AMD64}; \
+                export INSTALLER_URL="${CPAI_INSTALLER_URL_AMD64}"; \
         fi 
 
 # Environment vars ------------------------------------------------------------
