@@ -17,7 +17,7 @@ ARG BUILD_FROM
 # Note: we're before the first 'FROM' statement so these values are not available
 # inside the build stages. If you wish to use these inside a stage, re-grab them 
 # inside that stage
-ARG UBUNTU_VERSION=20.04
+ARG UBUNTU_VERSION=22.04
 ARG DOTNET_VERSION=9.0
 ARG CPAI_VERSION=2.9.7
 
@@ -48,7 +48,7 @@ ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Grab the values passed in via command line here so we can use inside this stage
-ARG UBUNTU_VERSION=20.04
+ARG UBUNTU_VERSION=22.04
 ARG DOTNET_VERSION=9.0
 ARG CPAI_VERSION
 
@@ -159,21 +159,21 @@ RUN apt install software-properties-common -y                               && \
 #    packages to the latest
 # 5. Install virtualenv virtualenvwrapper for python 3.8
 
-RUN apt-get install software-properties-common -y &&      \
-    add-apt-repository ppa:deadsnakes/ppa -y      &&      \
-    apt-get install -y --no-install-recommends            \
+RUN apt-get install software-properties-common -y
+RUN add-apt-repository ppa:deadsnakes/ppa -y
+RUN apt-get install -y --no-install-recommends            \
         python3-pip                                       \
         python3-apt                                       \
-        python3-setuptools                        &&      \
-    apt-get install -y --no-install-recommends            \
-        python3.8                                 &&      \
-    apt-get install -y --no-install-recommends            \
+        python3-setuptools
+RUN apt-get install -y --no-install-recommends            \
+        python3.8                                
+RUN apt-get install -y --no-install-recommends            \
         python3.8-distutils                               \
         python3.8-dev                                     \ 
-        python3.8-venv                            &&      \
-    python3.8 -m pip install --upgrade setuptools &&      \
-    python3.8 -m pip install --upgrade pip        &&      \
-    python3.8 -m pip install virtualenv virtualenvwrapper > /dev/null
+        python3.8-venv
+RUN python3.8 -m pip install --upgrade setuptools
+RUN python3.8 -m pip install --upgrade pip
+RUN python3.8 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # Python 3.9: Combining all these together into a single layer, but leveraging
 # the work done in Python 3.8:
@@ -184,28 +184,28 @@ RUN apt-get install software-properties-common -y &&      \
 # 5. Install virtualenv virtualenvwrapper for python 3.8
 
 RUN apt-get install -y --no-install-recommends            \
-        python3.9                                 &&      \
-    apt-get install -y --no-install-recommends            \
+        python3.9
+RUN apt-get install -y --no-install-recommends            \
         python3.9-distutils                               \
         python3.9-dev                                     \ 
-        python3.9-venv                            &&      \
-    python3.9 -m pip install --upgrade setuptools &&      \
-    python3.9 -m pip install --upgrade pip        &&      \
-    python3.9 -m pip install virtualenv virtualenvwrapper > /dev/null
+        python3.9-venv
+RUN python3.9 -m pip install --upgrade setuptools
+RUN python3.9 -m pip install --upgrade pip
+RUN python3.9 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # Install Python3.11, distutils and dev tools (so packages can be built if needed)
 # and pip install so we can install python packages. We don't need this for the
 # built in modules, but we know we have downloadable modules that could use Python3.11
 # so we preempt the need.
 RUN apt-get install -y --no-install-recommends             \
-        python3.11                                &&       \
-    apt-get install -y --no-install-recommends             \
+        python3.11
+RUN apt-get install -y --no-install-recommends             \
         python3.11-distutils                               \
         python3.11-dev                                     \ 
-        python3.11-venv                           &&       \
-    python3.11 -m pip install --upgrade setuptools &&      \
-    python3.11 -m pip install --upgrade pip        &&      \
-    python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
+        python3.11-venv
+RUN python3.11 -m pip install --upgrade setuptools
+RUN python3.11 -m pip install --upgrade pip
+RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # CREATE THE FINAL IMAGE ======================================================
 
