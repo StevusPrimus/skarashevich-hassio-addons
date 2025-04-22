@@ -92,7 +92,8 @@ RUN     apt-get update  -y && \
                                 \
                 kmod            > /dev/null && \
         apt-get install software-properties-common -y
-        # Install .NET 9.0 runtime
+# Install .NET 9.0 runtime
+# hadolint ignore=DL3008,DL3009,DL3015
 RUN     add-apt-repository ppa:dotnet/backports -y && \  
         apt-get update && \
         apt-get install -y aspnetcore-runtime-9.0 
@@ -188,7 +189,7 @@ RUN \
                         export INSTALLER_URL=${CPAI_INSTALLER_URL_AMD64}; \
                 fi \
         \
-        && wget ${INSTALLER_URL}
+        && wget --progress=dot:giga ${INSTALLER_URL}
 # Unzip the installer
 RUN \
         set -x \
@@ -224,7 +225,7 @@ RUN \
         && \
         ln -s /usr/bin/codeproject.ai-server-${CPAI_VERSION} /app 
 
-RUN pushd "/app/server" && bash ../setup.sh && popd
+RUN pushd "/app/server" && bash ../setup.sh && popd ||
 
 COPY rootfs /
 
