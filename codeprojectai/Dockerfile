@@ -184,9 +184,9 @@ ARG CPAI_FILE_NAME_AARCH64 CPAI_FILE_NAME_AMD64
 RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
-                        export INSTALLER_URL=${CPAI_INSTALLER_URL_AARCH64}; \
+                        export INSTALLER_URL="${CPAI_INSTALLER_URL_AARCH64}"; \
                 elif [ "${BUILD_ARCH}" = "amd64" ]; then \
-                        export INSTALLER_URL=${CPAI_INSTALLER_URL_AMD64}; \
+                        export INSTALLER_URL="${CPAI_INSTALLER_URL_AMD64}"; \
                 fi \
         \
         && wget --progress=dot:giga ${INSTALLER_URL}
@@ -194,9 +194,9 @@ RUN \
 RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
-                export FILE_NAME=${CPAI_FILE_NAME_AARCH64}; \
+                export FILE_NAME="${CPAI_FILE_NAME_AARCH64}"; \
         elif [ "${BUILD_ARCH}" = "amd64" ]; then \
-                export FILE_NAME=${CPAI_FILE_NAME_AMD64}; \
+                export FILE_NAME="${CPAI_FILE_NAME_AMD64}"; \
         fi \
         \ 
         && unzip ${FILE_NAME}.zip
@@ -215,17 +215,19 @@ RUN rm -rf /install
 
 WORKDIR /
 
+# Create symlink to /app
 RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
-                export CPAI_VERSION=${CPAI_VERSION_AARCH64}; \
+                export CPAI_VERSION="${CPAI_VERSION_AARCH64}"; \
         elif [ "${BUILD_ARCH}" = "amd64" ]; then \
-                export CPAI_VERSION=${CPAI_VERSION_AMD64}; \
+                export CPAI_VERSION="${CPAI_VERSION_AMD64}"; \
         fi \
         && \
         ln -s /usr/bin/codeproject.ai-server-${CPAI_VERSION} /app 
 
-RUN pushd "/app/server" && bash ../setup.sh && popd ||
+# RUN Setup
+RUN pushd "/app/server" && bash ../setup.sh && popd || exit 1
 
 COPY rootfs /
 
