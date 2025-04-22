@@ -60,6 +60,8 @@ EXPOSE 5000
 EXPOSE 32168/tcp
 EXPOSE 32168/udp
 
+
+# hadolint ignore=DL3008
 RUN apt-get update  -y && \
         apt-get upgrade -y --no-install-recommends apt-utils && \
         apt-get install -y --no-install-recommends \
@@ -89,11 +91,11 @@ RUN apt-get update  -y && \
                         \
         patch           \
                         \
-        kmod            > /dev/null
-RUN apt-get install software-properties-common -y 
-RUN add-apt-repository ppa:dotnet/backports -y   
-RUN apt-get update
-RUN apt-get install -y aspnetcore-runtime-9.0
+        kmod            > /dev/null && \
+        apt-get install software-properties-common -y && \
+        add-apt-repository ppa:dotnet/backports -y && \  
+        apt-get update && \
+        apt-get install -y aspnetcore-runtime-9.0 
 
 # Setup Python ----------------------------------------------------------------
 
@@ -115,21 +117,22 @@ RUN apt-get install -y aspnetcore-runtime-9.0
 #    packages to the latest
 # 5. Install virtualenv virtualenvwrapper for python 3.8
 
-RUN apt-get install software-properties-common -y
-RUN add-apt-repository ppa:deadsnakes/ppa -y
-RUN apt-get install -y --no-install-recommends            \
-        python3-pip                                       \
-        python3-apt                                       \
-        python3-setuptools
-RUN apt-get install -y --no-install-recommends            \
-        python3.8
-RUN apt-get install -y --no-install-recommends            \
-        python3.8-distutils                               \
-        python3.8-dev                                     \
-        python3.8-venv
-RUN python3.8 -m pip install --upgrade setuptools
-RUN python3.8 -m pip install --upgrade pip
-RUN python3.8 -m pip install virtualenv virtualenvwrapper > /dev/null
+# hadolint ignore=DL3008
+RUN     apt-get install software-properties-common -y && \
+        add-apt-repository ppa:deadsnakes/ppa -y && \
+        apt-get install -y --no-install-recommends            \
+                python3-pip                                       \
+                python3-apt                                       \
+                python3-setuptools && \
+        apt-get install -y --no-install-recommends            \
+                python3.8&& \
+        apt-get install -y --no-install-recommends            \
+                python3.8-distutils                               \
+                python3.8-dev                                     \
+                python3.8-venv && \
+        python3.8 -m pip install --upgrade setuptools && \
+        python3.8 -m pip install --upgrade pip && \
+        python3.8 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # Python 3.9: Combining all these together into a single layer, but leveraging
 # the work done in Python 3.8:
@@ -139,29 +142,32 @@ RUN python3.8 -m pip install virtualenv virtualenvwrapper > /dev/null
 #    packages to the latest
 # 5. Install virtualenv virtualenvwrapper for python 3.8
 
-RUN apt-get install -y --no-install-recommends            \
-        python3.9
-RUN apt-get install -y --no-install-recommends            \
-        python3.9-distutils                               \
-        python3.9-dev                                     \
-        python3.9-venv
-RUN python3.9 -m pip install --upgrade setuptools
-RUN python3.9 -m pip install --upgrade pip
-RUN python3.9 -m pip install virtualenv virtualenvwrapper > /dev/null
+# hadolint ignore=DL3008
+RUN     apt-get install -y --no-install-recommends            \
+                python3.9 && \
+        apt-get install -y --no-install-recommends            \
+                python3.9-distutils                               \
+                python3.9-dev                                     \
+                python3.9-venv && \
+        python3.9 -m pip install --upgrade setuptools && \
+        python3.9 -m pip install --upgrade pip && \
+        python3.9 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # Install Python3.11, distutils and dev tools (so packages can be built if needed)
 # and pip install so we can install python packages. We don't need this for the
 # built in modules, but we know we have downloadable modules that could use Python3.11
 # so we preempt the need.
-RUN apt-get install -y --no-install-recommends             \
-        python3.11
-RUN apt-get install -y --no-install-recommends             \
-        python3.11-distutils                               \
-        python3.11-dev                                     \
-        python3.11-venv
-RUN python3.11 -m pip install --upgrade setuptools
-RUN python3.11 -m pip install --upgrade pip
-RUN python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
+
+# hadolint ignore=DL3008
+RUN     apt-get install -y --no-install-recommends             \
+        python3.11 && \
+        apt-get install -y --no-install-recommends             \
+                python3.11-distutils                               \
+                python3.11-dev                                     \
+                python3.11-venv && \
+        python3.11 -m pip install --upgrade setuptools && \
+        python3.11 -m pip install --upgrade pip && \
+        python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 
 RUN mkdir -p /install
