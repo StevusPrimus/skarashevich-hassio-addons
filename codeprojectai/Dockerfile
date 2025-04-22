@@ -199,7 +199,7 @@ RUN \
                 export FILE_NAME="${CPAI_FILE_NAME_AMD64}"; \
         fi \
         \ 
-        && unzip ${FILE_NAME}.zip
+        && unzip "${FILE_NAME}.zip"
 # Install the package
 RUN \
         set -x \
@@ -209,7 +209,7 @@ RUN \
                 export FILE_NAME=${CPAI_FILE_NAME_AMD64}; \
         fi \
         \ 
-        && dpkg -i ${FILE_NAME}.deb
+        && dpkg -i "${FILE_NAME}.deb"
 # Clean up
 RUN rm -rf /install
 
@@ -224,7 +224,7 @@ RUN \
                 export CPAI_VERSION="${CPAI_VERSION_AMD64}"; \
         fi \
         && \
-        ln -s /usr/bin/codeproject.ai-server-${CPAI_VERSION} /app 
+        ln -s "/usr/bin/codeproject.ai-server-${CPAI_VERSION}" /app 
 
 # RUN Setup
 RUN pushd "/app/server" && bash ../setup.sh && ( popd || return )
