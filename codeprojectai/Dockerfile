@@ -1,5 +1,4 @@
 
-# hadolint global ignore=DL3059,DL3006,DL3008
 ARG BUILD_FROM=ghcr.io/hassio-addons/ubuntu-base:10.0.5
 # hadolint ignore=DL3006
 FROM $BUILD_FROM AS base
@@ -61,39 +60,40 @@ EXPOSE 32168/tcp
 EXPOSE 32168/udp
 
 
-# hadolint ignore=DL3008
-RUN apt-get update  -y && \
+# hadolint ignore=DL3008,DL3015,DL3009
+RUN     apt-get update  -y && \
         apt-get upgrade -y --no-install-recommends apt-utils && \
         apt-get install -y --no-install-recommends \
-        libfontconfig1  \
-        libgdiplus      \
-        libjpeg-dev     \
-        zlib1g-dev      \
-                        \
-        ffmpeg          \
-        libc6-dev       \
-        libsm6          \
-        libxext6        \
-                        \
-        mesa-utils      \
-                        \
-        gcc             \
-        python3-dev     \
-                        \
-        ca-certificates \
-        curl            \
-        jq              \
-        rsync           \
-        unzip           \
-        wget            \
-                        \
-        psmisc          \
-                        \
-        patch           \
-                        \
-        kmod            > /dev/null && \
-        apt-get install software-properties-common -y && \
-        add-apt-repository ppa:dotnet/backports -y && \  
+                libfontconfig1  \
+                libgdiplus      \
+                libjpeg-dev     \
+                zlib1g-dev      \
+                                \
+                ffmpeg          \
+                libc6-dev       \
+                libsm6          \
+                libxext6        \
+                                \
+                mesa-utils      \
+                                \
+                gcc             \
+                python3-dev     \
+                                \
+                ca-certificates \
+                curl            \
+                jq              \
+                rsync           \
+                unzip           \
+                wget            \
+                                \
+                psmisc          \
+                                \
+                patch           \
+                                \
+                kmod            > /dev/null && \
+        apt-get install software-properties-common -y
+        # Install .NET 9.0 runtime
+RUN     add-apt-repository ppa:dotnet/backports -y && \  
         apt-get update && \
         apt-get install -y aspnetcore-runtime-9.0 
 
@@ -117,7 +117,7 @@ RUN apt-get update  -y && \
 #    packages to the latest
 # 5. Install virtualenv virtualenvwrapper for python 3.8
 
-# hadolint ignore=DL3008
+# hadolint ignore=DL3008,DL3059,DL3013,DL3042,DL3015
 RUN     apt-get install software-properties-common -y && \
         add-apt-repository ppa:deadsnakes/ppa -y && \
         apt-get install -y --no-install-recommends            \
@@ -142,7 +142,8 @@ RUN     apt-get install software-properties-common -y && \
 #    packages to the latest
 # 5. Install virtualenv virtualenvwrapper for python 3.8
 
-# hadolint ignore=DL3008
+
+# hadolint ignore=DL3008,DL3059,DL3013,DL3042,DL3015
 RUN     apt-get install -y --no-install-recommends            \
                 python3.9 && \
         apt-get install -y --no-install-recommends            \
@@ -158,7 +159,8 @@ RUN     apt-get install -y --no-install-recommends            \
 # built in modules, but we know we have downloadable modules that could use Python3.11
 # so we preempt the need.
 
-# hadolint ignore=DL3008
+
+# hadolint ignore=DL3008,DL3059,DL3013,DL3042,DL3015
 RUN     apt-get install -y --no-install-recommends             \
         python3.11 && \
         apt-get install -y --no-install-recommends             \
