@@ -227,6 +227,7 @@ RUN \
         ln -s "/usr/bin/codeproject.ai-server-${CPAI_VERSION}" /app 
 
 # RUN Setup
+# hadolint ignore=SC2039
 RUN pushd "/app/server" && bash ../setup.sh && ( popd || return )
 
 COPY rootfs /
