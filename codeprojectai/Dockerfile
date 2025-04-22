@@ -1,3 +1,5 @@
+# hadolint global ignore=DL3059,DL3006,DL3008
+
 ARG BUILD_FROM=ghcr.io/hassio-addons/ubuntu-base:10.0.5
 # hadolint ignore=DL3006
 FROM $BUILD_FROM AS base
