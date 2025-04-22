@@ -176,12 +176,12 @@ RUN mkdir -p /install
 WORKDIR /install
 
 ARG BUILD_ARCH
-ARG CPAI_VERSION_AARCH64 = "2.9.7"
-ARG CPAI_VERSION_AMD64 = "2.9.5"
-ARG CPAI_FILE_NAME_AARCH64 = "codeproject.ai-server_2.9.7_Ubuntu_arm64"
-ARG CPAI_FILE_NAME_AMD64 = "codeproject.ai-server_2.9.5_Ubuntu_x64"
-ARG CPAI_INSTALLER_URL_AMD64 = "https://codeproject-ai-bunny.b-cdn.net/server/installers/linux/codeproject.ai-server_2.9.5_Ubuntu_x64.zip"
-ARG CPAI_INSTALLER_URL_AARCH64 = "https://codeproject-ai-bunny.b-cdn.net/server/installers/linux/codeproject.ai-server_2.9.7_Ubuntu_arm64.zip"
+ARG CPAI_VERSION_AARCH64="2.9.7"
+ARG CPAI_VERSION_AMD64="2.9.5"
+ARG CPAI_FILE_NAME_AARCH64="codeproject.ai-server_2.9.7_Ubuntu_arm64"
+ARG CPAI_FILE_NAME_AMD64="codeproject.ai-server_2.9.5_Ubuntu_x64"
+ARG CPAI_INSTALLER_URL_AMD64="https://codeproject-ai-bunny.b-cdn.net/server/installers/linux/codeproject.ai-server_2.9.5_Ubuntu_x64.zip"
+ARG CPAI_INSTALLER_URL_AARCH64="https://codeproject-ai-bunny.b-cdn.net/server/installers/linux/codeproject.ai-server_2.9.7_Ubuntu_arm64.zip"
 
 # Download the installer
 RUN \
