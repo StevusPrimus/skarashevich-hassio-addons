@@ -3,12 +3,15 @@ version: 2.9.7
 url: https://hub.docker.com/r/codeproject/ai-server
 image: "ghcr.io/stevusprimus/hassio-addon-ai.server-{arch}"
 panel_icon: mdi:face-recognition
-slug: ai.server
+slug: codeprojectai
 description: standalone open-source AI server
 arch:
   - amd64
   - aarch64
-startup: application
+ingress: true
+ingress_port: 32168
+ingress_stream: true
+startup: services
 boot: auto
 init: false
 full_access: false
@@ -21,13 +24,8 @@ ports:
   32168/tcp: 32168
   32168/udp: 32168
   5000/tcp: 5000
-ports_description:
-  32168/tcp: Web interface
-webui: "[PROTO:http]://[HOST]:[PORT:32168]/"
 map:
   - config:rw
-  - share:rw
-  - media:rw
 environment:
   HA_ADDON: "true"
   DATA_DIR: "/config/ai-server/data"

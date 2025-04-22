@@ -1,4 +1,5 @@
-ARG BUILD_FROM 
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base:7.8.2
+FROM $BUILD_FROM AS base
 
 # CodeProject.AI Server 3.0+
 #
@@ -16,7 +17,6 @@ ARG BUILD_FROM
 # It's important to pull the correct base for the target architecture, otherwise
 # building this image on, say, an Arm64 machine will result in the base image
 # being Arm64, not x86_64 as assumed.
-FROM ${BUILD_FROM} AS base
 
 ARG BUILD_ARCH
 ARG CPAI_VERSION_AARCH64 CPAI_VERSION_AMD64
@@ -214,4 +214,31 @@ RUN pushd "/app/server" && bash ../setup.sh && popd
 
 COPY rootfs /
 
-WORKDIR /app/server
+# Build arguments
+ARG BUILD_ARCH
+ARG BUILD_DATE
+ARG BUILD_DESCRIPTION
+ARG BUILD_NAME
+ARG BUILD_REF
+ARG BUILD_REPOSITORY
+ARG BUILD_VERSION
+
+# Labels
+LABEL \
+    io.hass.name="${BUILD_NAME}" \
+    io.hass.description="${BUILD_DESCRIPTION}" \
+    io.hass.arch="${BUILD_ARCH}" \
+    io.hass.type="addon" \
+    io.hass.version=${BUILD_VERSION} \
+    maintainer="StevusPrimus <stevusprimus@users.noreply.github.com>" \
+    org.opencontainers.image.title="${BUILD_NAME}" \
+    org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
+    org.opencontainers.image.vendor="Home Assistant 3rd Party Add-ons" \
+    org.opencontainers.image.authors="StevusPrimus <stevusprimus@users.noreply.github.com>" \
+    org.opencontainers.image.licenses="MIT" \
+    #org.opencontainers.image.url="https://addons.community" \
+    org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
+    org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md" \
+    org.opencontainers.image.created=${BUILD_DATE} \
+    org.opencontainers.image.revision=${BUILD_REF} \
+    org.opencontainers.image.version=${BUILD_VERSION}
