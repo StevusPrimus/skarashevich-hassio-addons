@@ -159,7 +159,6 @@ RUN     apt-get install -y --no-install-recommends            \
 # built in modules, but we know we have downloadable modules that could use Python3.11
 # so we preempt the need.
 
-
 # hadolint ignore=DL3008,DL3059,DL3013,DL3042,DL3015
 RUN     apt-get install -y --no-install-recommends             \
         python3.11 && \
@@ -171,7 +170,7 @@ RUN     apt-get install -y --no-install-recommends             \
         python3.11 -m pip install --upgrade pip && \
         python3.11 -m pip install virtualenv virtualenvwrapper > /dev/null
 
-
+# Now we can install the CodeProject.AI SDK
 RUN mkdir -p /install
 WORKDIR /install
 
@@ -180,6 +179,7 @@ ARG CPAI_VERSION_AARCH64 CPAI_VERSION_AMD64
 ARG CPAI_INSTALLER_URL_AARCH64 CPAI_INSTALLER_URL_AMD64
 ARG CPAI_FILE_NAME_AARCH64 CPAI_FILE_NAME_AMD64
 
+# Download the installer
 RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
@@ -189,6 +189,7 @@ RUN \
                 fi \
         \
         && wget ${INSTALLER_URL}
+# Unzip the installer
 RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
@@ -198,6 +199,7 @@ RUN \
         fi \
         \ 
         && unzip ${FILE_NAME}.zip
+# Install the package
 RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
@@ -207,6 +209,7 @@ RUN \
         fi \
         \ 
         && dpkg -i ${FILE_NAME}.deb
+# Clean up
 RUN rm -rf /install
 
 WORKDIR /
