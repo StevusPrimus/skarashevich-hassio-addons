@@ -184,12 +184,12 @@ ARG CPAI_FILE_NAME_AARCH64 CPAI_FILE_NAME_AMD64
 RUN \
         set -x \
         && if [ "${BUILD_ARCH}" = "aarch64" ]; then \
-                        "export INSTALLER_URL=${CPAI_INSTALLER_URL_AARCH64}"; \
-                elif [ "${BUILD_ARCH}" = "amd64" ]; then \
-                        "export INSTALLER_URL=${CPAI_INSTALLER_URL_AMD64}"; \
-                fi \
+                export INSTALLER_URL="${CPAI_INSTALLER_URL_AARCH64}"; \
+        elif [ "${BUILD_ARCH}" = "amd64" ]; then \
+                export INSTALLER_URL="${CPAI_INSTALLER_URL_AMD64}"; \
+        fi \
         \
-        && wget --progress=dot:giga "${INSTALLER_URL}
+        && wget --progress=dot:giga "${INSTALLER_URL}"
 # Unzip the installer
 RUN \
         set -x \
@@ -227,7 +227,7 @@ RUN \
         ln -s /usr/bin/codeproject.ai-server-${CPAI_VERSION} /app 
 
 # RUN Setup
-RUN pushd "/app/server" && bash ../setup.sh && popd || exit 1
+RUN pushd "/app/server" && bash ../setup.sh && ( popd || return )
 
 COPY rootfs /
 
