@@ -1,6 +1,4 @@
-# syntax = docker/dockerfile:1.4
 ARG BUILD_FROM 
-
 
 # CodeProject.AI Server 3.0+
 #
