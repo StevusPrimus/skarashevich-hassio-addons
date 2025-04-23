@@ -107,7 +107,20 @@ RUN     add-apt-repository ppa:dotnet/backports -y && \
 
 # hadolint ignore=DL3008,DL3059,DL3013,DL3042,DL3015
 RUN     apt-get install software-properties-common -y && \
-        add-apt-repository ppa:deadsnakes/ppa -y 
+        add-apt-repository ppa:deadsnakes/ppa -y && \
+        apt-get install -y --no-install-recommends            \
+                python3-pip                                       \
+                python3-apt                                       \
+                python3-setuptools && \
+        apt-get install -y --no-install-recommends            \
+                python3.8&& \
+        apt-get install -y --no-install-recommends            \
+                python3.8-distutils                               \
+                python3.8-dev                                     \
+                python3.8-venv && \
+        python3.8 -m pip install --upgrade setuptools && \
+        python3.8 -m pip install --upgrade pip && \
+        python3.8 -m pip install virtualenv virtualenvwrapper > /dev/null
 
 # Python 3.9: Combining all these together into a single layer, but leveraging
 # the work done in Python 3.8:
