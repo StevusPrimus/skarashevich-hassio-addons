@@ -1,5 +1,22 @@
 #!/command/with-contenv bashio
 # shellcheck shell=bash
 
+declare -a options
+declare MODULES_PATH
+declare DATA_DIR
+
+if bashio::config.exists 'MODULES_PATH'; then
+   export MODULES_PATH=$(bashio::config 'MODULES_PATH')
+fi
+if bashio::config.exists 'DATA_DIR'; then
+   export DATA_DIR=$(bashio::config 'DATA_DIR')
+fi
+
+mkdir -p "$MODULES_PATH"
+mkdir -p "$DATA_DIR"
+
+cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ModuleOptions.ModulesDirPath=\"$MODULES_PATH\"" > /app/server/appsettings.json.new
+mv /app/server/appsettings.json.new /app/server/appsettings.json
+
 cd /app/server || exit 1
 exec bash ../setup.sh

@@ -4,24 +4,14 @@
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
 
-set -x
-
 bashio::log.info 'Starting CodeProject.AI Server ...'
 
-config_path="/config"
-if bashio::config.has_value 'config_path'; then
-    config_path=$(bashio::config 'config_path')
+declare -a options
+declare DATA_DIR
+
+if bashio::config.exists 'DATA_DIR'; then
+   export DATA_DIR=$(bashio::config 'DATA_DIR')
 fi
-
-CONFIG_PATH=/data/options.json
-export MODULES_PATH=$(jq --raw-output '.MODULES_PATH // empty' $CONFIG_PATH)
-export DATA_DIR=$(jq --raw-output '.DATA_DIR // empty' $CONFIG_PATH)
-
-mkdir -p "$MODULES_PATH"
-mkdir -p "$DATA_DIR"
-
-cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ModuleOptions.ModulesPath=\"$MODULES_PATH\"" > /app/server/appsettings.json.new
-mv /app/server/appsettings.json.new /app/server/appsettings.json
 
 cd "/app/server" || bashio::exit.nok "Could not change working directory"
 exec dotnet ./CodeProject.AI.Server.dll --ApplicationDataDir=\"$DATA_DIR\"
