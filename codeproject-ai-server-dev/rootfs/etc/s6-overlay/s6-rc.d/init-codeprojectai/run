@@ -12,6 +12,8 @@ if bashio::config.exists 'DATA_DIR'; then
    export DATA_DIR=$(bashio::config 'DATA_DIR')
 fi
 
+cp /config/appsettings.json /app/server/appsettings.json
+
 mkdir -p "$MODULES_PATH"
 mkdir -p "$DATA_DIR"
 
