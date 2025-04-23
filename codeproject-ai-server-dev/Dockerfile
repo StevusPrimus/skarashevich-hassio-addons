@@ -24,18 +24,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # being Arm64, not x86_64 as assumed.
 
 ARG BUILD_ARCH
-ARG CPAI_VERSION_AARCH64 CPAI_VERSION_AMD64
-ARG CPAI_INSTALLER_URL_AARCH64 CPAI_INSTALLER_URL_AMD64
-ARG CPAI_FILE_NAME_AARCH64 CPAI_FILE_NAME_AMD64
 
-RUN   \ 
-        echo "CPAI_INSTALLER_URL_AARCH64L: ${CPAI_INSTALLER_URL_AARCH64}" \
-        && echo "CPAI_INSTALLER_URL_AMD64: ${CPAI_INSTALLER_URL_AMD64}" \
-        && echo "BUILD_ARCH: ${BUILD_ARCH}" \
-        && echo "CPAI_VERSION_AARCH64: ${CPAI_VERSION_AARCH64}" \
-        && echo "CPAI_VERSION_AMD64: ${CPAI_VERSION_AMD64}" \
-        && echo "CPAI_FILE_NAME_AARCH64: ${CPAI_FILE_NAME_AARCH64}" \
-        && echo "CPAI_FILE_NAME_AMD64: ${CPAI_FILE_NAME_AMD64}" 
+RUN echo "BUILD_ARCH: ${BUILD_ARCH}" 
 
 # Environment vars ------------------------------------------------------------
 
