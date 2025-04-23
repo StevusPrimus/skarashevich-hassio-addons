@@ -6,14 +6,7 @@
 
 bashio::log.info 'Starting CodeProject.AI Server ...'
 
-declare -a options
-declare DATA_DIR
-
-if bashio::config.exists 'DATA_DIR'; then
-   export DATA_DIR=$(bashio::config 'DATA_DIR')
-fi
-
 cd "/app/server" || bashio::exit.nok "Could not change working directory"
-exec dotnet ./CodeProject.AI.Server.dll --ApplicationDataDir=\"$DATA_DIR\"
+exec dotnet ./CodeProject.AI.Server.dll --ApplicationDataDir="/config/data"
 
 bashio::log.info 'CodeProject.AI Server started'
