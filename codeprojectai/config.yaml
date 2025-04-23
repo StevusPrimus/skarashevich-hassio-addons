@@ -4,7 +4,7 @@ version: dev
 url: https://hub.docker.com/r/codeproject/ai-server
 image: "ghcr.io/stevusprimus/hassio-addon-codeprojectai/{arch}"
 panel_icon: mdi:face-recognition
-slug: codeprojectai
+slug: codeproject-ai-server-dev
 description: standalone open-source AI server
 arch:
   - amd64
@@ -21,7 +21,6 @@ privileged:
 ports:
   32168/tcp: 32168
   32168/udp: 32168
-  5000/tcp: 5000
 map:
   - homeassistant_config:rw
 environment:
