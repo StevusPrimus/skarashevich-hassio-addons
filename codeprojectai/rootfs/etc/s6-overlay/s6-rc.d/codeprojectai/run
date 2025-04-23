@@ -1,10 +1,18 @@
-#!/usr/bin/with-contenv bashio
+#!/command/with-contenv bashio
 # ==============================================================================
 # Start the example service
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
 
 set -x
+
+bashio::log.info 'Starting CodeProject.AI Server ...'
+
+config_path="/config"
+if bashio::config.has_value 'config_path'; then
+    config_path=$(bashio::config 'config_path')
+fi
+
 CONFIG_PATH=/data/options.json
 export MODULES_PATH=$(jq --raw-output '.MODULES_PATH // empty' $CONFIG_PATH)
 export DATA_DIR=$(jq --raw-output '.DATA_DIR // empty' $CONFIG_PATH)
@@ -15,6 +23,7 @@ mkdir -p "$DATA_DIR"
 cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ModuleOptions.ModulesPath=\"$MODULES_PATH\"" > /app/server/appsettings.json.new
 mv /app/server/appsettings.json.new /app/server/appsettings.json
 
-echo "Starting CodeProject.AI Server"
+cd "/app/server" || bashio::exit.nok "Could not change working directory"
+exec dotnet ./CodeProject.AI.Server.dll --ApplicationDataDir=\"$DATA_DIR\"
 
-exex "cd /app/server && dotnet ./CodeProject.AI.Server.dll --ApplicationDataDir=\"$DATA_DIR\""
+bashio::log.info 'CodeProject.AI Server started'
