@@ -39,7 +39,7 @@ RUN   \
 
 # Environment vars ------------------------------------------------------------
 
-ENV ASPNETCORE_URLS=http://+:32168;http://+:5000
+#ENV ASPNETCORE_URLS=http://+:32168;http://+:5000
 
 # The simple log format is easier on my brain than json
 ENV LOGGING__CONSOLE__FORMATTERNAME=simple
@@ -225,10 +225,6 @@ RUN \
         fi \
         && \
         ln -s "/usr/bin/codeproject.ai-server-${CPAI_VERSION}" /app 
-
-# RUN Setup
-# hadolint ignore=SC2039
-#RUN pushd "/app/server" && bash ../setup.sh && ( popd || return )
 
 # Copy root filesystem
 COPY rootfs /
