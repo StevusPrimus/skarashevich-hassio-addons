@@ -15,6 +15,7 @@ fi
 mkdir -p "$MODULES_PATH"
 mkdir -p "$DATA_DIR"
 
+cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ServerOptions.DisableLegacyPort=true" > /app/server/appsettings.json.new
 cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ModuleOptions.ModulesDirPath=\"$MODULES_PATH\"" > /app/server/appsettings.json.new
 mv /app/server/appsettings.json.new /app/server/appsettings.json
 
