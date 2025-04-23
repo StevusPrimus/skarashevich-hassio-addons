@@ -2,10 +2,3 @@
 build_from:
   aarch64: ghcr.io/hassio-addons/ubuntu-base:9.0.5
   amd64: ghcr.io/hassio-addons/ubuntu-base:9.0.5
-args:
-  CPAI_VERSION_AARCH64: "2.9.7"
-  CPAI_VERSION_AMD64: "2.9.5"
-  CPAI_FILE_NAME_AARCH64: "codeproject.ai-server_2.9.7_Ubuntu_arm64"
-  CPAI_FILE_NAME_AMD64: "codeproject.ai-server_2.9.5_Ubuntu_x64"
-  CPAI_INSTALLER_URL_AMD64: "https://codeproject-ai-bunny.b-cdn.net/server/installers/linux/codeproject.ai-server_2.9.5_Ubuntu_x64.zip"
-  CPAI_INSTALLER_URL_AARCH64: "https://codeproject-ai-bunny.b-cdn.net/server/installers/linux/codeproject.ai-server_2.9.7_Ubuntu_arm64.zip"
