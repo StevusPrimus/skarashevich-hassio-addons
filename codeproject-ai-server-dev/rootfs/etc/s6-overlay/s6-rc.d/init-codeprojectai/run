@@ -11,15 +11,22 @@ fi
 if bashio::config.exists 'DATA_DIR'; then
    export DATA_DIR=$(bashio::config 'DATA_DIR')
 fi
-
-cp /config/appsettings.json /app/server/appsettings.json
-
 mkdir -p "$MODULES_PATH"
 mkdir -p "$DATA_DIR"
 
-cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ServerOptions.DisableLegacyPort=true" > /app/server/appsettings.json.new
-cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ModuleOptions.ModulesDirPath=\"$MODULES_PATH\"" > /app/server/appsettings.json.new
-mv /app/server/appsettings.json.new /app/server/appsettings.json
+# Check if the appsettings.json file exists in the config directory, if yes copy it in
+if [ /config/appsettings.json ]; then
+    bashio::log.info "Found appsettings.json in config directory"
+    cp /config/appsettings.json /app/server/appsettings.json
+else
+    bashio::log.info "No appsettings.json found in config directory"
+    bashio::log.info "Creating appsettings.json from template"
+    cp /app/server/appsettings.json /config/appsettings.json
+    cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ServerOptions.DisableLegacyPort=true" > /app/server/appsettings.json.new
+    cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ModuleOptions.ModulesDirPath=\"$MODULES_PATH\"" > /app/server/appsettings.json.new
+    mv /app/server/appsettings.json.new /app/server/appsettings.json
+    cp /app/server/appsettings.json /config/appsettings.json
+fi
 
 cd /app/server || exit 1
 exec bash ../setup.sh
