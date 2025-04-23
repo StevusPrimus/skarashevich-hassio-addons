@@ -5,13 +5,13 @@ mkdir -p "/config/runtimes"
 mkdir -p "/config/modules"
 
 # Check if the runtimes directory is a symlink, if not create it
-if [ ! -L "/app/server/runtimes"]; then
+if [ ! -L "/app/server/runtimes" ]; then
     rm -rf "/app/server/runtimes"
     ln -s "/config/runtimes" "/app/server/runtimes"
 fi
 
 # Check if the modules directory is a symlink, if not create it
-if [ ! -L "/app/server/modules"]; then
+if [ ! -L "/app/server/modules" ]; then
     rm -rf "/app/server/modules"
     ln -s "/config/modules" "/app/server/modules"
 fi
