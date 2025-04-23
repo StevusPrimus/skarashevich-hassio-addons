@@ -228,7 +228,7 @@ RUN \
 
 # RUN Setup
 # hadolint ignore=SC2039
-RUN pushd "/app/server" && bash ../setup.sh && ( popd || return )
+#RUN pushd "/app/server" && bash ../setup.sh && ( popd || return )
 
 # Copy root filesystem
 COPY rootfs /
