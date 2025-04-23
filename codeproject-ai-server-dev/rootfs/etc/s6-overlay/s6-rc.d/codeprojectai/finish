@@ -13,7 +13,10 @@ bashio::log.info \
   "Service ${service} exited with code ${exit_code_service}" \
   "(by signal ${exit_code_signal})"
 
-cp /app/server/appsettings.json /config/appsettings.json
+if [ ! -f "/config/appsettings.json" ]; then
+  bashio::log.info "Initally Copied appsettings.json to config directory"
+  cp /app/server/appsettings.json /config/appsettings.json
+fi
 
 if [[ "${exit_code_service}" -eq 256 ]]; then
   if [[ "${exit_code_container}" -eq 0 ]]; then
