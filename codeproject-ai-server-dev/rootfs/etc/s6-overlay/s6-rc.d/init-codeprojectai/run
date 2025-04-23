@@ -15,7 +15,7 @@ mkdir -p "$MODULES_PATH"
 mkdir -p "$DATA_DIR"
 
 # Check if the appsettings.json file exists in the config directory, if yes copy it in
-if [ /config/appsettings.json ]; then
+if [ -f "/config/appsettings.json" ]; then
     bashio::log.info "Found appsettings.json in config directory"
     cp /config/appsettings.json /app/server/appsettings.json
 else
