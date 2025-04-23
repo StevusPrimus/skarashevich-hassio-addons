@@ -3,6 +3,9 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/ubuntu-base:9.0.5
 # hadolint ignore=DL3006
 FROM $BUILD_FROM AS base
 
+# Set shell
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # CodeProject.AI Server 3.0+
 #
 # Docker file for x86_64 CPU enabled image
@@ -53,12 +56,6 @@ ENV LANGUAGE=C
 ENV LC_ALL=C
 ENV LANG=C
 ENV LC_CTYPE=C
-
-# Setup the ports -------------------------------------------------------------
-EXPOSE 5000
-EXPOSE 32168/tcp
-EXPOSE 32168/udp
-
 
 # hadolint ignore=DL3008,DL3015,DL3009
 RUN     apt-get update  -y && \
@@ -233,7 +230,12 @@ RUN \
 # hadolint ignore=SC2039
 RUN pushd "/app/server" && bash ../setup.sh && ( popd || return )
 
+# Copy root filesystem
 COPY rootfs /
+
+# Health check
+HEALTHCHECK --start-period=5m \
+    CMD curl --insecure --fail http://localhost:32168 || exit 1
 
 # Build arguments
 ARG BUILD_ARCH
