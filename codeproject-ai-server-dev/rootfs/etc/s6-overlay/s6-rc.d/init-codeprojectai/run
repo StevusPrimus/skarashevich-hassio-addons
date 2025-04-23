@@ -1,18 +1,26 @@
 #!/command/with-contenv bashio
 # shellcheck shell=bash
 
-declare -a options
-declare MODULES_PATH
-declare DATA_DIR
+mkdir -p "/config/runtimes"
+mkdir -p "/config/modules"
 
-if bashio::config.exists 'MODULES_PATH'; then
-   export MODULES_PATH=$(bashio::config 'MODULES_PATH')
+# Check if the runtimes directory is a symlink, if not create it
+if [! -L "/app/server/runtimes"]; then
+    rm -rf "/app/server/runtimes"
+    ln -s "/config/runtimes" "/app/server/runtimes"
 fi
-if bashio::config.exists 'DATA_DIR'; then
-   export DATA_DIR=$(bashio::config 'DATA_DIR')
+
+# Check if the modules directory is a symlink, if not create it
+if [ ! -L "/app/server/modules"]; then
+    rm -rf "/app/server/modules"
+    ln -s "/config/modules" "/app/server/modules"
 fi
-mkdir -p "$MODULES_PATH"
-mkdir -p "$DATA_DIR"
+
+if [ ! -L "/app/server/appsettings.json" ]; then  
+    cp /app/server/appsettings.json /config/appsettings.json
+    rm /app/server/appsettings.json
+    ln -s /config/appsettings.json /app/server/appsettings.json
+fi
 
 # Check if the appsettings.json file exists in the config directory, if yes copy it in
 if [ -f "/config/appsettings.json" ]; then
@@ -23,7 +31,6 @@ else
     bashio::log.info "Creating appsettings.json from template"
     cp /app/server/appsettings.json /config/appsettings.json
     cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ServerOptions.DisableLegacyPort=true" > /app/server/appsettings.json.new
-    cat /app/server/appsettings.json  | sed -e 's/\/\/ .*$//g' | jq ".ModuleOptions.ModulesDirPath=\"$MODULES_PATH\"" > /app/server/appsettings.json.new
     mv /app/server/appsettings.json.new /app/server/appsettings.json
     cp /app/server/appsettings.json /config/appsettings.json
 fi

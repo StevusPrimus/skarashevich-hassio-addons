@@ -216,6 +216,10 @@ RUN \
         && \
         ln -s "/usr/bin/codeproject.ai-server-${CPAI_VERSION}" /app 
 
+RUN  cat /app/server/appsettings.json  | \
+        sed -e 's/\/\/ .*$//g' | jq ".ServerOptions.DisableLegacyPort=true" > /app/server/appsettings.json.new \
+        && mv /app/server/appsettings.json.new /app/server/appsettings.json        
+
 # Copy root filesystem
 COPY rootfs /
 
